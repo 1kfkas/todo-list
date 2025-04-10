@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To do list</title>
+    <style>
+        .elementos {
+            display: flex;
+            justify-content: space-evenly;
+            flex-wrap: wrap;
+        }
+
+        .todos-list {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .addTask {
+            color: white;
+            padding: 20px;
+            border-radius: 5%;
+            background: linear-gradient(180deg, rgba(65,175,228,1) 0%, rgba(28,55,177,1) 100%);
+        }
+
+        .listTask {
+            color: white;
+            padding: 20px;
+            border-radius: 5%;
+            background: linear-gradient(180deg, rgba(128,65,228,1) 0%, rgba(177,28,176,1) 100%);
+        }
+    </style>
+</head>
+<body>
+    <div class="elementos">
+        <div class="addTask">
+            <h1>ADICIONAR ITEM</h1>
+            <form method="POST" action="{% url 'todosAdd' %}">
+                {% csrf_token %}
+                <label for="todo-task">Tarefa:</label>
+                <input type="text" name="todo-task" id="task-input" required>
+                <br>
+                <input type="submit">
+            </form>
+        </div>
+        <div class="listTask">
+            <h1>LISTA DE AFAZERES</h1>
+            <div>
+                {% for object in todosList %}
+                <div class="todos-list">
+                    <input type="checkbox" {% if object.completed %} onclick="taskUncheck('{{ object.id }}')" checked {% else %} onclick="taskCheck('{{ object.id }}')" {% endif %}>
+                    <p>{{ object.title }}</p>
+                    <a href="delete/{{ object.id }}">DELETAR</a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const taskInput = document.getElementById("task-input");
+        
+        window.setTimeout(function(){
+            if(document.activeElement !== taskInput){
+                //location.reload();
+                return true;
+            }
+        }, 5000);
+
+        function taskCheck(id){
+            window.location.href = "check/" + id
+        }
+
+        function taskUncheck(id){
+            window.location.href = "uncheck/" + id
+        }
+    </script>
+</body>
+</html>
